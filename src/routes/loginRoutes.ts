@@ -1,7 +1,21 @@
-import { Router, Request, Response, request } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 
 interface RequestWithBody extends Request {
   body: { [key: string]: string | undefined };
+}
+
+function requireAuth(
+  request: Request,
+  response: Response,
+  next: NextFunction
+): void {
+  if (request.session && request.session.loggedIn) {
+    next();
+    return;
+  }
+
+  response.status(403);
+  response.send("not permitted");
 }
 
 const router = Router();
@@ -61,5 +75,15 @@ router.get("/logout", (request: Request, response: Response) => {
   request.session = undefined;
   response.redirect("/");
 });
+
+router.get(
+  "/protected",
+  requireAuth,
+  (request: Request, response: Response) => {
+    response.send(
+      "Welcome to the protected route. The secret of the universe is 42"
+    );
+  }
+);
 
 export { router };
