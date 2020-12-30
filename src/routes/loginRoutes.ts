@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, request } from "express";
 
 interface RequestWithBody extends Request {
   body: { [key: string]: string | undefined };
@@ -48,11 +48,18 @@ router.get("/", (request: Request, response: Response) => {
   } else {
     response.send(`
     <div>
-        <div>You are not logged in/div>
-        <a href="/login">logout</a>
+        <div>You are not logged in</div>
+        <a href="/login">login</a>
     </div>
   `);
   }
+});
+
+//logout
+router.get("/logout", (request: Request, response: Response) => {
+  //reset session
+  request.session = undefined;
+  response.redirect("/");
 });
 
 export { router };
