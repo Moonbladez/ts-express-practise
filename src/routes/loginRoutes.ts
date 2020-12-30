@@ -36,4 +36,23 @@ router.post("/login", (request: RequestWithBody, response: Response) => {
   }
 });
 
+//root
+router.get("/", (request: Request, response: Response) => {
+  if (request.session && request.session.loggedIn) {
+    response.send(`
+        <div>
+            <div>You are loggined in</div>
+            <a href="/logout">logout</a>
+        </div>
+      `);
+  } else {
+    response.send(`
+    <div>
+        <div>You are not logged in/div>
+        <a href="/login">logout</a>
+    </div>
+  `);
+  }
+});
+
 export { router };
